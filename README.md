@@ -1,73 +1,111 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+https://docs.nestjs.com/
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### TypeORM migration
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+#### Objectives
+Generate and use migrations instead of syncing database. In dev and prod.
+This is the recommended method by TypeORM once you have data on prod, to avoid any loss.
 
-## Description
+#### Pre-requisites
+TypeORM installed: https://docs.nestjs.com/techniques/database
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+#### Install
 
-## Installation
+> src/app.module.ts
+```ts
+import { DynamicModule, Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as ormconfig from './ormconfig';
 
-```bash
-$ npm install
+export function DatabaseOrmModule(): DynamicModule {
+  // we could load the configuration from dotEnv here,
+  // but typeORM cli would not be able to find the configuration file.
+
+  return TypeOrmModule.forRoot(ormconfig);
+}
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot(ormconfig)
+    // or
+    // DatabaseOrmModule(),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
 ```
 
-## Running the app
 
-```bash
-# development
-$ npm run start
+> src/ormconfig.ts
+```ts
+import {ConnectionOptions} from 'typeorm';
 
-# watch mode
-$ npm run start:dev
+// You can load you .env file here synchronously using dotenv package (not installed here),
+// import * as dotenv from 'dotenv';
+// import * as fs from 'fs';
+// const environment = process.env.NODE_ENV || 'development';
+// const data: any = dotenv.parse(fs.readFileSync(`${environment}.env`));
+// You can also make a singleton service that load and expose the .env file content.
+// ...
 
-# production mode
-$ npm run start:prod
+
+// Check typeORM documentation for more information.
+const config: ConnectionOptions = {
+  type: 'postgres',
+  host: 'localhost',
+  port: 5432,
+  username: 'postgres',
+  password: 'pwd',
+  database: 'migrationexample',
+  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+
+  // We are using migrations, synchronize should be set to false.
+  synchronize: false,
+
+  // Run migrations automatically,
+  // you can disable this if you prefer running migration manually.
+  migrationsRun: true,
+  logging: true,
+  logger: 'file',
+
+  // Allow both start:prod and start:dev to use migrations
+  // __dirname is either dist or src folder, meaning either
+  // the compiled js in prod or the ts in dev.
+  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+  cli: {
+    // Location of migration should be inside src folder
+    // to be compiled into dist/ folder.
+    migrationsDir: 'src/migrations',
+  },
+};
+
+export = config;
 ```
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+> package.json
+```json
+"scripts": {
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
+    "typeorm:migrate": "npm run typeorm migration:generate -- -n",
+    "typeorm:run": "npm run typeorm migration:run"
+}
 ```
 
-## Support
+#### Usage
+1. `npm run typeorm:migrate <myEntity-migration>`
+2. Check your migration queries in `src/migrations`
+3. `npm run start:dev` or `npm run start:prod` or `npm run typeorm:run`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+If everything went well, you have up to date entites and a `migrations` table listing applied migrations.
 
-## Stay in touch
+#### Additionnal information
+- If you set `migrationsRun` to false in ormconfig.ts, you will have to use `npm run typeorm:run` to apply the migration, otherwise all migrations are applied automatically at application start.
+- If you do not set `--config` parameter typeorm seek a valid configuration file at the root of the project.
+- You do not want `ormconfig.ts` at the root of the project, otherwise it change /dist structure, you would have to change `start:prod: node dist/main.js` to `start:prod: node dist/src/main.js`.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+@SeeAlso https://github.com/typeorm/typeorm/blob/master/docs/migrations.md  
+@SeeAlso https://github.com/typeorm/typeorm/blob/master/docs/using-cli.md#notes-on-entity-files-written-in-typescript  
