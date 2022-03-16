@@ -17,6 +17,8 @@ export class createTableDoctorsSpecialties1647312699289
             name: 'id',
             type: 'uuid',
             isPrimary: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'doctor_id',

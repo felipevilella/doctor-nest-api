@@ -13,12 +13,10 @@ const options: TypeOrmModuleOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
 
   synchronize: false,
   migrationsRun: true,
-  logging: true,
-  logger: 'file',
 
   migrations: [__dirname + '/infra/typeorm/migrations/**/*{.ts,.js}'],
   cli: {

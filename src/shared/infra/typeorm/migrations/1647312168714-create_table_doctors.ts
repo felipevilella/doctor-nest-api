@@ -10,6 +10,8 @@ export class createTableDoctors1647312168714 implements MigrationInterface {
             name: 'id',
             type: 'uuid',
             isPrimary: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'name',
@@ -23,18 +25,25 @@ export class createTableDoctors1647312168714 implements MigrationInterface {
           },
           {
             name: 'landline',
-            type: 'varchar',
+            type: 'BIGINT',
             isNullable: false,
           },
           {
             name: 'cell_phone',
-            type: 'varchar',
+            type: 'BIGINT',
             isNullable: false,
           },
           {
             name: 'cep',
-            type: 'varchar',
+            type: 'BIGINT',
             isNullable: false,
+          },
+
+          {
+            name: 'is_delete',
+            type: 'boolean',
+            isNullable: true,
+            default: false,
           },
         ],
       }),
