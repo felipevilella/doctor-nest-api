@@ -1,8 +1,14 @@
 import { AppError } from '../../../erros/AppError';
+import { getRedis, setRedis } from '../RedisProvider';
+import axios from 'axios';
 
 async function search(cep: number) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const axios = require('axios');
+  const addressRedis = await getRedis(`${cep}-axios`);
+
+  if (addressRedis !== null) {
+    return JSON.parse(addressRedis);
+  }
+
   let address = '';
 
   await axios.get(`https://viacep.com.br/ws/${cep}/json/`).then((response) => {
@@ -13,7 +19,11 @@ async function search(cep: number) {
     throw new AppError(`zipCode does not exist`, 400);
   }
 
-  return `${address['logradouro']} - ${address['bairro']}, ${address['localidade']} - ${address['uf']}`;
+  const addressComplete = `${address['logradouro']} - ${address['bairro']}, ${address['localidade']} - ${address['uf']}`;
+
+  setRedis(`${cep}-axios`, JSON.stringify(addressComplete));
+
+  return addressComplete;
 }
 
 export { search };

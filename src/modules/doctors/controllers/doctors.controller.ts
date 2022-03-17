@@ -20,9 +20,10 @@ import { DoctorsService } from '../services/doctors.service';
 import { ListDoctorDto } from '../dto/list-doctor.dto';
 import { CreateDoctorSwagger } from '../swagger/create-doctor.swagger';
 import { SearchDoctorSwagger } from '../swagger/search-doctor.swagger';
-import { BadRequestSwagger } from '../helpes/swagger/bad-request.swagger';
+import { BadRequestSwagger } from '../swagger/helpes/bad-request.swagger';
 import { UpdateDoctorSwagger } from '../swagger/update-doctor.swagger';
 import { response } from 'express';
+import { findRedis, saveRedis } from '../helpers/redis';
 
 @ApiTags('Doctors')
 @Controller('doctors')
@@ -61,8 +62,16 @@ export class DoctorsController {
   })
   @ApiOkResponse({ type: [Doctor] })
   async find(@Query() listDoctorDto: ListDoctorDto) {
-    const list = await this.doctorsService.find(listDoctorDto);
+    const list = await findRedis(listDoctorDto);
 
+    if (!list) {
+      const list = await this.doctorsService.find(listDoctorDto);
+      await saveRedis(list, listDoctorDto);
+
+      return list;
+    }
+
+    console.log('oii');
     return list;
   }
 
