@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TypeSpecialty } from '../entities/type_specialty.entity';
+import { Specialty } from '../entities/specialty.entity';
 
 @Injectable()
-export class TypeSpecialtiesService {
+export class SpecialtiesService {
   constructor(
-    @InjectRepository(TypeSpecialty)
-    private readonly doctorRepository: Repository<TypeSpecialty>,
+    @InjectRepository(Specialty)
+    private readonly doctorRepository: Repository<Specialty>,
   ) {}
 
-  async findAll(): Promise<TypeSpecialty[]> {
+  async findAll(): Promise<Specialty[]> {
     const typeSpecialties = await this.doctorRepository.find();
 
     return typeSpecialties;

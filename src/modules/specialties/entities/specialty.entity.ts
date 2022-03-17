@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity({
-  name: 'type_specialties',
+  name: 'specialties',
 })
-export class TypeSpecialty {
+export class Specialty {
   @PrimaryColumn()
   id: string;
 

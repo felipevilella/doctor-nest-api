@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, Repository } from 'typeorm';
+import { uuid } from 'uuidv4';
 import { CreateDoctorDto } from '../dto/create-doctor.dto';
 import { UpdateDoctorDto } from '../dto/update-doctor.dto';
 import { Doctor } from '../entities/doctor.entity';
@@ -18,13 +19,16 @@ export class DoctorsService {
     crm,
     landline,
     name,
+    address,
   }: CreateDoctorDto): Promise<Doctor> {
     const doctor = this.doctorRepository.create({
+      id: uuid(),
       cell_phone,
       cep,
       crm,
       landline,
       name,
+      address,
     });
 
     await this.doctorRepository.save(doctor);
@@ -45,7 +49,7 @@ export class DoctorsService {
   async update(
     id: string,
     { cell_phone, cep, crm, landline, name }: UpdateDoctorDto,
-  ): Promise<void> {
+  ): Promise<Doctor> {
     this.doctorRepository.update(id, {
       cell_phone,
       cep,
@@ -53,9 +57,11 @@ export class DoctorsService {
       landline,
       name,
     });
+
+    return this.doctorRepository.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
-    this.doctorRepository.update(id, { is_delete: true });
+    await this.doctorRepository.update(id, { is_delete: true });
   }
 }

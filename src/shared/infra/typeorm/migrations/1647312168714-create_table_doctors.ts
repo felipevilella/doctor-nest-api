@@ -10,8 +10,6 @@ export class createTableDoctors1647312168714 implements MigrationInterface {
             name: 'id',
             type: 'uuid',
             isPrimary: true,
-            generationStrategy: 'uuid',
-            default: 'uuid_generate_v4()',
           },
           {
             name: 'name',
@@ -36,6 +34,12 @@ export class createTableDoctors1647312168714 implements MigrationInterface {
           {
             name: 'cep',
             type: 'BIGINT',
+            isNullable: false,
+          },
+
+          {
+            name: 'address',
+            type: 'varchar',
             isNullable: false,
           },
 

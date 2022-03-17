@@ -6,16 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { search } from 'src/shared/container/providers/PostOfficeZip';
-import { AppError } from 'src/shared/erros/AppError';
 import { ApiTags, ApiOkResponse } from '@nestjs/swagger';
 
+import { Doctor } from '../entities/doctor.entity';
+import { search } from '../../../shared/container/providers/PostOfficeZip';
 import { CreateDoctorDto } from '../dto/create-doctor.dto';
 import { UpdateDoctorDto } from '../dto/update-doctor.dto';
+import { AppError } from '../../../shared/erros/AppError';
 import { DoctorsService } from '../services/doctors.service';
-import { DoctorsSpecialtiesService } from '../services/doctors_specialties.service';
-import { Doctor } from '../entities/doctor.entity';
 
 @ApiTags('Doctors')
 @Controller('doctors')
@@ -24,25 +24,48 @@ export class DoctorsController {
 
   @Post()
   @ApiOkResponse({ type: [Doctor] })
-  create(@Body() createDoctorDto: CreateDoctorDto) {
-    const isExistCep = search(createDoctorDto.cep);
-
-    if (!isExistCep) {
-      throw new AppError('zip does not exist', 400);
+  async create(@Body() createDoctorDto: CreateDoctorDto) {
+    if (createDoctorDto.specialtys.length < 2) {
+      throw new AppError('The doctor must have at least two specialties', 400);
     }
 
-    return this.doctorsService.create(createDoctorDto);
+    const address = await search(createDoctorDto.cep);
+    createDoctorDto.address = address;
+
+    const doctor = this.doctorsService.create(createDoctorDto);
+    return doctor;
   }
 
-  @Get(':id')
+  // @Get()
+  // @ApiOkResponse({ type: [Doctor] })
+  // async find(@Query() listDoctorDto: ListDoctorDto) {
+  //   console.log(listDoctorDto);
+  //   const list = await this.doctorsService.find(listDoctorDto);
+
+  //   return list;
+  // }
+
+  @Get()
   @ApiOkResponse({ type: Doctor })
-  findOne(@Param('id') id: string) {
-    return this.doctorsService.findOne(id);
+  findOne(@Query('id') id: string) {
+    return this.doctorsService.find(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoctorDto: UpdateDoctorDto) {
-    return this.doctorsService.update(id, updateDoctorDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateDoctorDto: UpdateDoctorDto,
+  ) {
+    if (updateDoctorDto.specialtys.length < 2) {
+      throw new AppError('The doctor must have at least two specialties', 400);
+    }
+
+    const address = await search(updateDoctorDto.cep);
+    updateDoctorDto.address = address;
+
+    const doctor = this.doctorsService.update(id, updateDoctorDto);
+
+    return doctor;
   }
 
   @Delete(':id')

@@ -11,7 +11,7 @@ export class createTableDoctorsSpecialties1647312699289
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'doctors_specialties',
+        name: 'doctors_specialtys_specialties',
         columns: [
           {
             name: 'id',
@@ -21,12 +21,12 @@ export class createTableDoctorsSpecialties1647312699289
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'doctor_id',
+            name: 'doctorsId',
             type: 'uuid',
             isNullable: false,
           },
           {
-            name: 'type_specialtie_id',
+            name: 'specialtiesId',
             type: 'uuid',
             isNullable: false,
           },
@@ -35,10 +35,10 @@ export class createTableDoctorsSpecialties1647312699289
     );
 
     await queryRunner.createForeignKey(
-      'doctors_specialties',
+      'doctors_specialtys_specialties',
       new TableForeignKey({
-        name: 'fk_doctors_specialties',
-        columnNames: ['doctor_id'],
+        name: 'fk_doctors_specialtys_specialties',
+        columnNames: ['doctorsId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'doctors',
         onDelete: 'CASCADE',
@@ -46,12 +46,12 @@ export class createTableDoctorsSpecialties1647312699289
     );
 
     await queryRunner.createForeignKey(
-      'doctors_specialties',
+      'doctors_specialtys_specialties',
       new TableForeignKey({
         name: 'fk_specialties_doctors',
-        columnNames: ['type_specialtie_id'],
+        columnNames: ['specialtiesId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'type_specialties',
+        referencedTableName: 'specialties',
         onDelete: 'CASCADE',
       }),
     );
@@ -59,12 +59,12 @@ export class createTableDoctorsSpecialties1647312699289
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey(
-      'doctors_specialties',
+      'doctors_specialtys_specialties',
       'fk_specialties_doctors',
     );
     await queryRunner.dropForeignKey(
-      'doctors_specialties',
-      'fk_doctors_specialties',
+      'doctors_specialtys_specialties',
+      'fk_doctors_specialtys_specialties',
     );
     await queryRunner.dropTable('fk_specialties_doctors');
   }

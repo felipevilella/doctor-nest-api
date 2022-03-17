@@ -37,10 +37,16 @@ export class CreateDoctorDto {
 
   @ApiProperty({
     example: [
-      'c1e1a7de-b446-45d2-bb5b-3d067a7705e2',
-      'c1e1a7de-b446-45d2-bb5b-3d067a7705e3',
+      {
+        id: 'c1e1a7de-b446-45d2-bb5b-3d067a7705e2',
+      },
+      {
+        id: 'c1e1a7de-b446-45d2-bb5b-3d067a7705e3',
+      },
     ],
   })
   @IsNotEmpty({ message: 'The doctor should have a types specialties ids' })
-  type_specialtie_ids?: any[];
+  specialtys?: any[];
+
+  address?: string;
 }

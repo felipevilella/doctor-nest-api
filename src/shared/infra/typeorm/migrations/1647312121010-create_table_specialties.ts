@@ -6,7 +6,7 @@ export class createTableTypeSpecialties1647312121010
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'type_specialties',
+        name: 'specialties',
         columns: [
           {
             name: 'id',
@@ -24,6 +24,6 @@ export class createTableTypeSpecialties1647312121010
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('type_specialties');
+    await queryRunner.dropTable('specialties');
   }
 }

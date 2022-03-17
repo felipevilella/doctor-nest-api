@@ -18,9 +18,9 @@ const options: TypeOrmModuleOptions = {
   synchronize: false,
   migrationsRun: true,
 
-  migrations: [__dirname + '/infra/typeorm/migrations/**/*{.ts,.js}'],
+  migrations: [__dirname + 'src/shared/infra/typeorm/migrations/**/*{.ts,.js}'],
   cli: {
-    migrationsDir: 'src/infra/typeorm/migrations',
+    migrationsDir: 'src/shared/infra/typeorm/migrations',
   },
 };
 
