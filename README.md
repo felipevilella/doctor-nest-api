@@ -37,7 +37,7 @@
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
-- [nestJs)(https://docs.nestjs.com)
+- [nestJs](https://docs.nestjs.com)
 - [Node.js](https://nodejs.org/en/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [TypeORM](https://www.npmjs.com/package/typeorm)
