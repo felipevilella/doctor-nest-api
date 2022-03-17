@@ -25,6 +25,4 @@ const options: TypeOrmModuleOptions = {
   },
 };
 
-
-console.log(__dirname + '/shared/infra/typeorm/migrations/**/*{.ts,.js}');
 module.exports = options;
