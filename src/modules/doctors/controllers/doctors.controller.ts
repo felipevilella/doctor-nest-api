@@ -71,7 +71,6 @@ export class DoctorsController {
       return list;
     }
 
-    console.log('oii');
     return list;
   }
 
