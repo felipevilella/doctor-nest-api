@@ -1,111 +1,52 @@
-https://docs.nestjs.com/
-
-### TypeORM migration
-
-#### Objectives
-Generate and use migrations instead of syncing database. In dev and prod.
-This is the recommended method by TypeORM once you have data on prod, to avoid any loss.
-
-#### Pre-requisites
-TypeORM installed: https://docs.nestjs.com/techniques/database
-
-#### Install
-
-> src/app.module.ts
-```ts
-import { DynamicModule, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as ormconfig from './ormconfig';
-
-export function DatabaseOrmModule(): DynamicModule {
-  // we could load the configuration from dotEnv here,
-  // but typeORM cli would not be able to find the configuration file.
-
-  return TypeOrmModule.forRoot(ormconfig);
-}
-
-@Module({
-  imports: [
-    TypeOrmModule.forRoot(ormconfig)
-    // or
-    // DatabaseOrmModule(),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
-})
-export class AppModule {}
-```
+<h1 align="center"> Doctor-API </h1>
 
 
-> src/ormconfig.ts
-```ts
-import {ConnectionOptions} from 'typeorm';
-
-// You can load you .env file here synchronously using dotenv package (not installed here),
-// import * as dotenv from 'dotenv';
-// import * as fs from 'fs';
-// const environment = process.env.NODE_ENV || 'development';
-// const data: any = dotenv.parse(fs.readFileSync(`${environment}.env`));
-// You can also make a singleton service that load and expose the .env file content.
-// ...
+## Descrição do Projeto
+<p align="justify"> uma aplicação de gestão de empresas e usuários que são colaboradores dessas empresas, como uma espécie de parte de um ERP - Enterprise Resource Planning. </p>
 
 
-// Check typeORM documentation for more information.
-const config: ConnectionOptions = {
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'pwd',
-  database: 'migrationexample',
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
+### Topico Completados
 
-  // We are using migrations, synchronize should be set to false.
-  synchronize: false,
-
-  // Run migrations automatically,
-  // you can disable this if you prefer running migration manually.
-  migrationsRun: true,
-  logging: true,
-  logger: 'file',
-
-  // Allow both start:prod and start:dev to use migrations
-  // __dirname is either dist or src folder, meaning either
-  // the compiled js in prod or the ts in dev.
-  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-  cli: {
-    // Location of migration should be inside src folder
-    // to be compiled into dist/ folder.
-    migrationsDir: 'src/migrations',
-  },
-};
-
-export = config;
-```
+- [x] Cadastro de Doutor
+- [x] Editação de Doutor
+- [x] Listagem de Doutor
+- [x] Exclusão de Doutor
+- [x] Criar mecanismo de busca por todos os campos do cadastro do médico, incluindo o endereço
+- [x] Utilizar ferramenta de validação 
+- [x] Funções especialistas (Realizam somente uma operação)
+- [x] Para documentação e requisição utilizar o Postman, Insomnia ou Swagger (Enviar junto com o teste o workspace utilizado)
+- [x] Criar arquivo docker compose para avaliação do teste (ATENÇÃO: Sem esse arquivo seu teste não será executado)
+- [x] Testes unitários
 
 
-> package.json
-```json
-"scripts": {
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/ormconfig.ts",
-    "typeorm:migrate": "npm run typeorm migration:generate -- -n",
-    "typeorm:run": "npm run typeorm migration:run"
-}
-```
+### Executando o projeto
 
-#### Usage
-1. `npm run typeorm:migrate <myEntity-migration>`
-2. Check your migration queries in `src/migrations`
-3. `npm run start:dev` or `npm run start:prod` or `npm run typeorm:run`
+  1. Execute ```yarn start:dev``` raiz da aplicação.
+  2. Caso não possua o docker instaldo na sua maquina siga essas instruções [https://github.com/codeedu/wsl2-docker-quickstart](https://github.com/codeedu/wsl2-docker-quickstart) 
+  1. Execute ```docker-compose up -d``` para iniciar o container do redis. 
+  3. A aplicação estará disponível no endereço [http://localhost:3000]tp://localhost:3000)
+  4. Execute ``yarn test`` para rodar os testes unitarios da aplicação
+  4. Execute ``yarn typeorm migration:run`` para rodar as migrations
+  6. Documentação em swagger para ter acesso a rota e testar os endpoints com as funções [http://localhost:3000/api](http://localhost:3000/api))
 
-If everything went well, you have up to date entites and a `migrations` table listing applied migrations.
 
-#### Additionnal information
-- If you set `migrationsRun` to false in ormconfig.ts, you will have to use `npm run typeorm:run` to apply the migration, otherwise all migrations are applied automatically at application start.
-- If you do not set `--config` parameter typeorm seek a valid configuration file at the root of the project.
-- You do not want `ormconfig.ts` at the root of the project, otherwise it change /dist structure, you would have to change `start:prod: node dist/main.js` to `start:prod: node dist/src/main.js`.
+### Comandos úteis
+  - `yarn` instalar bibliotecas
+  
+### 🛠 Tecnologias
 
-@SeeAlso https://github.com/typeorm/typeorm/blob/master/docs/migrations.md  
-@SeeAlso https://github.com/typeorm/typeorm/blob/master/docs/using-cli.md#notes-on-entity-files-written-in-typescript  
+As seguintes ferramentas foram usadas na construção do projeto:
+
+- [nestJs)(https://docs.nestjs.com)
+- [Node.js](https://nodejs.org/en/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [TypeORM](https://www.npmjs.com/package/typeorm)
+- [Swagger](https://docs.nestjs.com/openapi/types-and-parameters#types-and-parameters)
+- [Jest](https://jestjs.io)
+- [Eslintrc](https://eslint.org/docs/user-guide/configuring/)
+- [Prettier](https://prettier.io)
+- [Docker](https://www.docker.com)
+  
+  
+  
+  
