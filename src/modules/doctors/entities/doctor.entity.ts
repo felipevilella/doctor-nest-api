@@ -1,7 +1,6 @@
-import { Specialty } from '../../specialties/entities/specialty.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
-import { uuid } from 'uuidv4';
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
+import { Specialty } from '../../specialties/entities/specialty.entity';
 
 @Entity({
   name: 'doctors',

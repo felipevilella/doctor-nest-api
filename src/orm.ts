@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 
 ConfigModule.forRoot({
   envFilePath: '.env',
@@ -13,15 +14,17 @@ const options: TypeOrmModuleOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  entities: [join(__dirname, '**', '*.entity.{ts,js}')],
 
   synchronize: false,
   migrationsRun: true,
 
-  migrations: [__dirname + 'src/shared/infra/typeorm/migrations/**/*{.ts,.js}'],
+  migrations: [__dirname + '/shared/infra/typeorm/migrations/**/*{.ts,.js}'],
   cli: {
     migrationsDir: 'src/shared/infra/typeorm/migrations',
   },
 };
 
+
+console.log(__dirname + '/shared/infra/typeorm/migrations/**/*{.ts,.js}');
 module.exports = options;
