@@ -2,7 +2,7 @@
 
 
 ## Descrição do Projeto
-<p align="justify"> uma aplicação de gestão de empresas e usuários que são colaboradores dessas empresas, como uma espécie de parte de um ERP - Enterprise Resource Planning. </p>
+<p align="justify"> Desenvolver um sistema que faça a gestão de cadastros de médicos.</p>
 
 
 ### Topico Completados
