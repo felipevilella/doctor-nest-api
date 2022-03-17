@@ -4,7 +4,6 @@
 ## Descrição do Projeto
 <p align="justify"> Desenvolver um sistema que faça a gestão de cadastros de médicos.</p>
 
-
 ### Topico Completados
 
 - [x] Cadastro de Doutor
@@ -17,6 +16,7 @@
 - [x] Para documentação e requisição utilizar o Postman, Insomnia ou Swagger (Enviar junto com o teste o workspace utilizado)
 - [x] Criar arquivo docker compose para avaliação do teste (ATENÇÃO: Sem esse arquivo seu teste não será executado)
 - [x] Testes unitários
+- [x] CEP: somente números (Ao cadastrar o CEP, deve ser feita uma reqisição via XHR para a API dos correios e retornar todos os dados de endereço do cliente). Obs: *** API do correios não estava retornando os CEP's foi utilizado a do viacep no lugar *** 
 
 
 ### Executando o projeto
